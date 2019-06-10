@@ -1,16 +1,10 @@
 <div class="grid">
   <table>
     <tr>
-      <th *ngFor="let header of headers">{{header}}</th>
+      <th *ngFor="let header of headers">{{header.name}}</th>
     </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+    <tr *ngFor="let row of data">
+      <td *ngFor="let header of headers">{{row[header.field]}}</td>
     </tr>
   </table>
 </div>
