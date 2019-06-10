@@ -1,13 +1,7 @@
 <div class="grid">
   <table>
     <tr>
-      <th>Title</th>
-      <th>Division</th>
-      <th>Project Owner</th>
-      <th>Budget</th>
-      <th>Status</th>
-      <th>Created Date</th>
-      <th>Modified Date</th>
+      <th *ngFor="let header of headers">{{header}}</th>
     </tr>
     <tr>
       <td></td>
