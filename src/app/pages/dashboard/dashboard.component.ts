@@ -71,4 +71,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
     );
   }
+
+  updateProject(project) {
+    this.projectService.updateProject(project)
+      .subscribe(success => {
+        console.log(success);
+      });
+  }
 }

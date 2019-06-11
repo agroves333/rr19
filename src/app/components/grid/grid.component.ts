@@ -9,7 +9,7 @@ import {
   ViewChildren,
   EventEmitter
 } from '@angular/core';
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription, Subject, fromEvent } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import moment from 'moment';
 
@@ -24,8 +24,19 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() headers: string[];
   @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
-  private subscriptions = new Subscription();
+  @Output() editCell: EventEmitter<any> = new EventEmitter();
+  private subscriptions$ = new Subscription();
+  editCellKeyups$ = new Subject<Event>();
+
   constructor() {
+  }
+
+  ngOnInit() {
+    this.editCellKeyups$
+      .pipe(debounceTime(1000))
+      .subscribe(row => {
+        this.editCell.emit(row);
+      });
   }
 
   ngAfterViewInit() {
@@ -47,20 +58,13 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
           }),
           debounceTime(1000)
         );
-      this.subscriptions.add(filter$.subscribe(x => {
+      this.subscriptions$.add(filter$.subscribe(x => {
         this.filter.emit(x);
       }));
     });
   }
 
-  ngOnInit() {
-  }
-
   ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  onDateSelect(event) {
-    console.log(event);
+    this.subscriptions$.unsubscribe();
   }
 }

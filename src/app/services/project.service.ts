@@ -15,30 +15,34 @@ export class ProjectService {
   }
 
   getProjects(projectFilter?): Observable<Project[]> {
-    try {
-      if (projectFilter) {
-        if (projectFilter.value) {
-          this.filters[projectFilter.field] = projectFilter.value;
-        } else {
-          delete this.filters[projectFilter.field];
-        }
-      }
-
-      let projects: Observable<Project[]>;
-
-      if (Object.keys(this.filters).length) {
-        projects = this.db.projects
-          .where(this.filters)
-          .toArray();
+    if (projectFilter) {
+      if (projectFilter.value) {
+        this.filters[projectFilter.field] = projectFilter.value;
       } else {
-        projects = this.db.projects
-          .toCollection()
-          .toArray();
+        delete this.filters[projectFilter.field];
       }
-
-      return from<Observable<Project[]>>(projects);
-    } catch (err) {
-      console.log(err);
     }
+
+    const projects = this.db.projects.filter(project => {
+      const include = Object.keys(this.filters).reduce((acc, key) => {
+        if (projectFilter.partial) {
+          const partial = new RegExp(this.filters[key], 'i');
+          acc = acc && partial.test(project[key]);
+        } else {
+          acc = acc && this.filters[key] === project[key];
+        }
+        return acc;
+      }, true);
+
+      return include;
+    }).toArray();
+
+    return from<Observable<Project[]>>(projects);
+  }
+
+  updateProject(project) {
+    return from(this.db.projects.update(project.id, {
+      [project.field]: project.value
+    }));
   }
 }

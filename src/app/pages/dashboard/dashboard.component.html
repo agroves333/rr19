@@ -4,6 +4,7 @@
     [headers]="gridHeaders"
     [data]="projects"
     (filter)="getProjects($event)"
+    (editCell)="updateProject($event)"
   >
   </app-grid>
 </div>
