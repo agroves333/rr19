@@ -25,7 +25,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   private subscriptions = new Subscription();
-
   constructor() {
   }
 
