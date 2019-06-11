@@ -3,6 +3,11 @@
     <tr>
       <th *ngFor="let header of headers">{{header.name}}</th>
     </tr>
+    <tr>
+      <td *ngFor="let header of headers">
+        <input #filter *ngIf="header.filter != false" type="text">
+      </td>
+    </tr>
     <tr *ngFor="let row of data">
       <td *ngFor="let header of headers">{{row[header.field]}}</td>
     </tr>

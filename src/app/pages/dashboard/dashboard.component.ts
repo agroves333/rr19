@@ -15,31 +15,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   gridHeaders = [
     {
       name: 'Title',
-      field: 'title'
+      field: 'title',
     },
     {
       name: 'Division',
-      field: 'division'
+      field: 'division',
     },
     {
       name: 'Project Owner',
-      field: 'project_owner'
+      field: 'project_owner',
     },
     {
       name: 'Budget',
-      field: 'budget'
+      field: 'budget',
     },
     {
       name: 'Status',
-      field: 'status'
+      field: 'status',
     },
     {
       name: 'Create Date',
-      field: 'created'
+      field: 'created',
+      type: 'date',
     },
     {
       name: 'Modified Data',
-      field: 'modified'
+      field: 'modified',
+      type: 'date',
     },
   ];
   private projectsSubcription$: Subscription;
@@ -49,13 +51,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.projectsSubcription$ = this.projectService.getProjects()
-      .subscribe(projects => {
-        this.projects = projects;
-      });
+
   }
 
   ngOnDestroy(): void {
     this.projectsSubcription$.unsubscribe();
+  }
+
+  getProjects() {
+    this.projectsSubcription$ = this.projectService.getProjects()
+      .subscribe(projects => {
+        this.projects = projects;
+      });
   }
 }
