@@ -56,21 +56,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.projectsSubscription$.add(
-      this.projectService.getProjects()
-        .subscribe(projects => {
-          console.log(projects);
-          this.projects = projects;
-        })
-    );
+    this.getProjects();
   }
 
   ngOnDestroy(): void {
     this.projectsSubscription$.unsubscribe();
   }
 
-  getProjects(filter) {
-    // this.projectsSubscription$.unsubscribe();
+  getProjects(filter?) {
     this.projectsSubscription$.add(
       this.projectService.getProjects(filter)
       .subscribe(projects => {
