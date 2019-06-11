@@ -5,7 +5,12 @@
     </tr>
     <tr>
       <td *ngFor="let header of headers">
-        <input #filter *ngIf="header.filter != false" type="text">
+        <input
+          #filter
+          [attr.data-field]="header.field"
+          [attr.data-partial]="header.partial"
+          *ngIf="header.filter != false"
+          type="text">
       </td>
     </tr>
     <tr *ngFor="let row of data">

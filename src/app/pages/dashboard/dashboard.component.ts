@@ -16,22 +16,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
     {
       name: 'Title',
       field: 'title',
+      partial: true,
     },
     {
       name: 'Division',
       field: 'division',
+      partial: true,
     },
     {
       name: 'Project Owner',
       field: 'project_owner',
+      partial: true,
     },
     {
       name: 'Budget',
       field: 'budget',
+      partial: true,
     },
     {
       name: 'Status',
       field: 'status',
+      partial: true,
     },
     {
       name: 'Create Date',
@@ -44,24 +49,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
       type: 'date',
     },
   ];
-  private projectsSubcription$: Subscription;
+  private projectsSubscription$: Subscription = new Subscription();
 
   constructor(private projectService: ProjectService, private titleService: Title) {
     this.titleService.setTitle('Project Dashboard');
   }
 
   ngOnInit() {
-
+    this.projectsSubscription$.add(
+      this.projectService.getProjects()
+        .subscribe(projects => {
+          console.log(projects);
+          this.projects = projects;
+        })
+    );
   }
 
   ngOnDestroy(): void {
-    this.projectsSubcription$.unsubscribe();
+    this.projectsSubscription$.unsubscribe();
   }
 
-  getProjects() {
-    this.projectsSubcription$ = this.projectService.getProjects()
+  getProjects(filter) {
+    // this.projectsSubscription$.unsubscribe();
+    this.projectsSubscription$.add(
+      this.projectService.getProjects(filter)
       .subscribe(projects => {
         this.projects = projects;
-      });
+      })
+    );
   }
 }

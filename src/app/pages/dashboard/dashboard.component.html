@@ -1,4 +1,6 @@
 <app-grid
   [headers]="gridHeaders"
   [data]="projects"
-></app-grid>
+  (filter)="getProjects($event)"
+>
+</app-grid>
