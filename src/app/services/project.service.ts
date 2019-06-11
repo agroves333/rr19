@@ -14,7 +14,7 @@ export class ProjectService {
 
   getProjects(projectFilter?) {
     if (projectFilter) {
-      const filterKey = `${projectFilter.field}${projectFilter.partial && '_like'}`;
+      const filterKey = `${projectFilter.field}${projectFilter.partial ? '_like' : ''}`;
       if (projectFilter.value) {
         this.filters[filterKey] = projectFilter.value;
       } else {

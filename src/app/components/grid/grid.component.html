@@ -7,10 +7,19 @@
       <td *ngFor="let header of headers">
         <input
           #filter
+          *ngIf="header.filter != false && (header.type === 'text' || header.type === undefined)"
+          class="form-control"
+          type="text"
           [attr.data-field]="header.field"
           [attr.data-partial]="header.partial"
-          *ngIf="header.filter != false"
-          type="text">
+        >
+        <input
+          #filter
+          *ngIf="header.filter != false && header.type === 'date'"
+          class="form-control"
+          type="date"
+          [attr.data-field]="header.field"
+        >
       </td>
     </tr>
     <tr *ngFor="let row of data">

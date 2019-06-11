@@ -8,7 +8,7 @@ import { DashboardModule } from './pages/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,

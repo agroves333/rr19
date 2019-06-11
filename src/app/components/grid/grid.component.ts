@@ -10,7 +10,8 @@ import {
   EventEmitter
 } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
-import { map, debounceTime, tap } from 'rxjs/operators';
+import { map, debounceTime } from 'rxjs/operators';
+import moment from 'moment';
 
 @Component({
   selector: 'app-grid',
@@ -19,7 +20,7 @@ import { map, debounceTime, tap } from 'rxjs/operators';
 })
 export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() data;
+  @Input() data: any[];
   @Input() headers: string[];
   @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
@@ -30,12 +31,17 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.filters.forEach(filter => {
-      const filter$ = fromEvent(filter.nativeElement, 'keyup')
+      const filter$ = fromEvent(filter.nativeElement, 'input')
         .pipe(
           map((e: any) => {
             const el = e.target;
+            let value = el.value;
+            const type = el.type;
+            if (type === 'date' && value) {
+              value = moment(value, 'YYYY-MM-DD').format('MM/DD/YYYY');
+            }
             return {
-              value: el.value,
+              value,
               field: el && el.dataset && el.dataset.field,
               partial: el && el.dataset && el.dataset.partial
             };
@@ -53,5 +59,9 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  onDateSelect(event) {
+    console.log(event);
   }
 }
