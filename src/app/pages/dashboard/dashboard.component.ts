@@ -14,6 +14,7 @@ import moment from 'moment';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
+  totalProjects = 0;
   gridHeaders = [
     {
       name: 'Actions',
@@ -95,6 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.projectsSubscription$.add(
       this.projectService.getProjects(filter)
       .subscribe(projects => {
+        this.totalProjects = this.projectService.totalProjects;
         this.projects = projects;
       })
     );

@@ -1,28 +1,30 @@
 <div class="container">
   <h1>Project Dashboard</h1>
   <div class="stats p-2">
-    <div>Stat</div>
-    <div>Stat</div>
-    <div>Stat</div>
   </div>
-  <div class="actions py-2">
-    <button class="btn btn-success mr-1">New Project</button>
-    <span class="dropdown">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        Export
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Excel</a>
-        <a class="dropdown-item" href="#">PDF</a>
+  <div class="actions py-2 d-flex justify-content-between">
+      <div class="d-flex">
+        <button class="btn btn-success mr-1">New Project</button>
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Export
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Excel</a>
+            <a class="dropdown-item" href="#">PDF</a>
+          </div>
+        </div>
       </div>
-    </span>
+      <div>
+        Displaying {{projects.length}} of {{totalProjects}} projects
+      </div>
   </div>
   <app-grid
     [headers]="gridHeaders"

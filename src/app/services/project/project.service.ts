@@ -10,12 +10,14 @@ import moment from 'moment';
 export class ProjectService {
 
   filters = {};
+  totalProjects = 0;
   db;
   constructor(private data: DataService) {
     this.db = this.data.db;
   }
 
   getProjects(projectFilter?): Observable<Project[]> {
+    this.totalProjects = 0;
     if (projectFilter) {
       // Add filter to filter object
       if (projectFilter.value) {
@@ -24,8 +26,8 @@ export class ProjectService {
         delete this.filters[projectFilter.field];
       }
     }
-
     const projects = this.db.projects.filter(project => {
+      this.totalProjects++;
       const include = Object.keys(this.filters).reduce((acc, key) => {
 
         if (projectFilter.partial) {
@@ -54,10 +56,8 @@ export class ProjectService {
         }
         return acc;
       }, true);
-
       return include;
     }).toArray();
-
     return from<Observable<Project[]>>(projects);
   }
 
