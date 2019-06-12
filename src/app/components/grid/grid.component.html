@@ -1,36 +1,43 @@
 <div class="grid">
   <table class="table">
     <thead class="thead-dark">
-    <tr>
-      <th *ngFor="let header of headers">{{header.name}}</th>
-    </tr>
-    <tr>
-      <td *ngFor="let header of headers">
-        <input
-          #filter
-          *ngIf="header.filter != false && (header.type === 'text' || header.type === undefined)"
-          class="form-control"
-          type="text"
-          [attr.data-field]="header.field"
-          [attr.data-partial]="header.partial"
-        >
-        <input
-          #filter
-          *ngIf="header.filter != false && (header.type === 'number')"
-          class="form-control"
-          type="number"
-          [attr.data-field]="header.field"
-          [attr.data-partial]="header.partial"
-        >
-        <input
-          #filter
-          *ngIf="header.filter != false && header.type === 'date'"
-          class="form-control"
-          type="date"
-          [attr.data-field]="header.field"
-        >
-      </td>
-    </tr>
+      <tr>
+        <th *ngFor="let header of headers">{{header.name}}</th>
+      </tr>
+      <tr>
+        <td *ngFor="let header of headers">
+          <input
+            #filter
+            *ngIf="header.filter !== false && (header.type === 'text' || header.type === undefined)"
+            class="form-control"
+            type="text"
+            [attr.data-field]="header.field"
+            [attr.data-partial]="header.partial"
+          >
+          <input
+            #filter
+            *ngIf="header.filter !== false && (header.type === 'number')"
+            class="form-control"
+            type="number"
+            [attr.data-field]="header.field"
+            [attr.data-partial]="header.partial"
+          >
+          <input
+            #filter
+            *ngIf="header.filter !== false && header.type === 'date'"
+            class="form-control mb-1"
+            type="date"
+            [attr.data-field]="header.field + '_to'"
+          >
+          <input
+            #filter
+            *ngIf="header.filter !== false && header.type === 'date'"
+            class="form-control"
+            type="date"
+            [attr.data-field]="header.field + '_from'"
+          >
+        </td>
+      </tr>
     </thead>
     <tbody>
     </tbody>

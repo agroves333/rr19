@@ -6,13 +6,14 @@ import { Injectable } from '@angular/core';
 export class AlertService {
 
   message = '';
-  type = 'success';
+  type = '';
   isOpen = false;
 
   constructor() { }
 
-  open(message) {
+  alert(type, message = 'success') {
     this.message = '';
+    this.type = type;
     this.isOpen = true;
     this.message = message;
 
