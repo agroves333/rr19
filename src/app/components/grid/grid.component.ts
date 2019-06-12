@@ -22,6 +22,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() data: any[];
   @Input() headers: string[];
+  @Input() debounceTime = 0;
   @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
@@ -57,7 +58,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
               partial: el && el.dataset && el.dataset.partial,
             };
           }),
-          debounceTime(1000)
+          debounceTime(this.debounceTime)
         );
       this.subscriptions$.add(filter$.subscribe(x => {
         this.filter.emit(x);

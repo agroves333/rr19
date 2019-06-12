@@ -5,6 +5,7 @@ import moment from 'moment';
 import {ProjectService} from '../../services/project/project.service';
 import { Project } from '../../interfaces/project.interface';
 import {AlertService} from '../../services/alert/alert.service';
+import {UtilityService} from '../../services/utility/utility.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -82,7 +83,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ];
   private subscriptions$: Subscription = new Subscription();
 
-  constructor(private projectService: ProjectService, private titleService: Title, private alertService: AlertService) {
+  constructor(private projectService: ProjectService, private titleService: Title, private alertService: AlertService,
+              private utils: UtilityService) {
     this.titleService.setTitle('Project Dashboard');
   }
 
@@ -100,7 +102,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe(projects => {
         this.totalProjects = this.projectService.totalProjects;
         this.statusPercentages = this.projectService.statusPercentages;
-        this.totalBudget = this.getCurrencyValue(this.projectService.totalBudget);
+        this.totalBudget = this.utils.getCurrencyValue(this.projectService.totalBudget);
         this.projects = projects;
       })
     );
@@ -125,11 +127,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  getCurrencyValue(value) {
-    return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-  }
-
-  formatPercentage(percentage) {
-    return `${Math.floor(percentage  * 100)} %`;
+  getStats() {
+    this.projectService.getStats();
   }
 }

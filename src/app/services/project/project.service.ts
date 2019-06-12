@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../data/data.service';
 import { Observable, from } from 'rxjs';
-import {Project} from '../../interfaces/project.interface';
 import moment from 'moment';
+import {Project} from '../../interfaces/project.interface';
+import {UtilityService} from '../utility/utility.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ProjectService {
   totalBudget = 0;
   statusPercentages: any;
   db;
-  constructor(private data: DataService) {
+  constructor(private data: DataService, private utils: UtilityService) {
     this.db = this.data.db;
   }
 
@@ -77,5 +78,13 @@ export class ProjectService {
 
   updateProject(project) {
     return from(this.db.projects.update(project.id, project));
+  }
+
+  getStats() {
+    return {
+      totalProjects: this.totalProjects,
+      totalBudget: this.utils.getCurrencyValue(this.totalBudget),
+      statusPercentages: this.statusPercentages
+    };
   }
 }

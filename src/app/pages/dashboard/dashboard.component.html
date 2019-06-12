@@ -2,9 +2,9 @@
   <h1>Project Dashboard</h1>
   <div class="stats p-2">
     <div>Total Budget: {{totalBudget}}</div>
-    <div *ngIf="statusPercentages?.new">New: {{formatPercentage(statusPercentages?.new / totalProjects)}}</div>
-    <div *ngIf="statusPercentages?.working">Working: {{formatPercentage(statusPercentages?.working / totalProjects)}}</div>
-    <div *ngIf="statusPercentages?.archived">Archived: {{formatPercentage(statusPercentages?.archived / totalProjects)}}</div>
+    <div *ngIf="statusPercentages?.new">New: {{utils.formatPercentage(statusPercentages?.new / totalProjects)}}</div>
+    <div *ngIf="statusPercentages?.working">Working: {{utils.formatPercentage(statusPercentages?.working / totalProjects)}}</div>
+    <div *ngIf="statusPercentages?.archived">Archived: {{utils.formatPercentage(statusPercentages?.archived / totalProjects)}}</div>
   </div>
   <div class="actions py-2 d-flex justify-content-between">
       <div class="d-flex">
@@ -21,8 +21,8 @@
             Export
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Excel</a>
-            <a class="dropdown-item" href="#">PDF</a>
+            <a class="dropdown-item">Excel</a>
+            <a class="dropdown-item">PDF</a>
           </div>
         </div>
       </div>
