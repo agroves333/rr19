@@ -1,7 +1,7 @@
 {
   "root": "dist/",
   "routes": {
-    "/**": "rr19/index.html",
-    "/dashboard/**": "rr19/index.html"
+    "/**": "index.html",
+    "/dashboard/**": "index.html"
   }
 }
