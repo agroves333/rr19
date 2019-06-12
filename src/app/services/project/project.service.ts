@@ -49,6 +49,7 @@ export class ProjectService {
             console.log(dateKey);
           }
         } else {
+          // Handle non-partial text searches
           acc = acc && this.filters[key] === project[key];
         }
         return acc;
@@ -61,8 +62,6 @@ export class ProjectService {
   }
 
   updateProject(project) {
-    return from(this.db.projects.update(project.id, {
-      [project.field]: project.value
-    }));
+    return from(this.db.projects.update(project.id, project));
   }
 }

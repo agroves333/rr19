@@ -52,9 +52,9 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             return {
               value,
+              type,
               field: el && el.dataset && el.dataset.field,
               partial: el && el.dataset && el.dataset.partial,
-              type: type
             };
           }),
           debounceTime(1000)

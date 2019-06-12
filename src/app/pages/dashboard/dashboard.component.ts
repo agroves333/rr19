@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import {ProjectService} from '../../services/project/project.service';
 import { Project } from '../../interfaces/project.interface';
 import {AlertService} from '../../services/alert/alert.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +15,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
   gridHeaders = [
+    {
+      name: 'Actions',
+      type: 'actions',
+      components: {
+        view: {
+          component: 'button',
+          link: '/project/:id',
+          text: 'View'
+        }
+      }
+    },
     {
       name: 'Project ID',
       field: 'id',
@@ -58,7 +70,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       editable: true,
     },
     {
-      name: 'Modified Data',
+      name: 'Modified Date',
       field: 'modified',
       type: 'date',
       editable: true,
@@ -87,7 +99,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateProject(project) {
+  updateProject(data) {
+    const project = {...data.row, [data.field]: data.value};
+    project.modified = moment().format('MM/DD/YYYY');
+    // Update modified cell
+    this.projects.forEach(row => {
+      if (row.id === data.id) {
+        row.modified = project.modified;
+      }
+    });
     this.projectsSubscription$.add(
       this.projectService.updateProject(project)
         .subscribe(success => {

@@ -49,7 +49,7 @@
           class="editable"
           type="text"
           value="{{row[header.field]}}"
-          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value})"
+          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
         >
         <input
           #cell
@@ -58,9 +58,16 @@
           type="date"
           value="{{getDateValue(row[header.field])}}"
           [attr.data-field]="header.field"
-          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value)})"
+          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value), row: row})"
         >
         <span *ngIf="!header.editable">{{row[header.field]}}</span>
+        <button
+          *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
+          type="button"
+          class="btn btn-primary"
+        >
+          {{header?.components?.view?.text}}
+        </button>
       </td>
     </tr>
   </table>
