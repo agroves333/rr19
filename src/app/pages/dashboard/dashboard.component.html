@@ -2,7 +2,9 @@
   <h1>Project Dashboard</h1>
   <div class="stats p-2">
     <div>Total Budget: {{totalBudget}}</div>
-    <div>Stat</div>
+    <div *ngIf="statusPercentages?.new">New: {{formatPercentage(statusPercentages?.new / totalProjects)}}</div>
+    <div *ngIf="statusPercentages?.working">Working: {{formatPercentage(statusPercentages?.working / totalProjects)}}</div>
+    <div *ngIf="statusPercentages?.archived">Archived: {{formatPercentage(statusPercentages?.archived / totalProjects)}}</div>
   </div>
   <div class="actions py-2 d-flex justify-content-between">
       <div class="d-flex">

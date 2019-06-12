@@ -12,14 +12,18 @@ export class ProjectService {
   filters = {};
   totalProjects = 0;
   totalBudget = 0;
+  statusPercentages: any;
   db;
   constructor(private data: DataService) {
     this.db = this.data.db;
   }
 
   getProjects(projectFilter?): Observable<Project[]> {
+    // Initialize stats
     this.totalProjects = 0;
     this.totalBudget = 0;
+    this.statusPercentages = {};
+
     if (projectFilter) {
       // Add filter to filter object
       if (projectFilter.value) {
@@ -29,8 +33,15 @@ export class ProjectService {
       }
     }
     const projects = this.db.projects.filter(project => {
+      // Calculate stats
       this.totalProjects++;
       this.totalBudget += Number(project.budget);
+      if (typeof this.statusPercentages[project.status] === 'undefined') {
+        this.statusPercentages[project.status] = 0;
+      } else {
+        this.statusPercentages[project.status]++;
+      }
+
       const include = Object.keys(this.filters).reduce((acc, key) => {
 
         if (projectFilter.partial) {
