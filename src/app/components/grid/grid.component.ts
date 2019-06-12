@@ -34,8 +34,8 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.editCellKeyups$
       .pipe(debounceTime(1000))
-      .subscribe(row => {
-        this.editCell.emit(row);
+      .subscribe(data => {
+        this.editCell.emit(data);
       });
   }
 
@@ -66,5 +66,13 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions$.unsubscribe();
+  }
+
+  getDateValue(date) {
+    return moment(date, 'MM/DD/YYYY').format('YYYY-MM-DD');
+  }
+
+  setDateValue(date) {
+    return moment(date, 'YYYY-MM-DD').format('MM/DD/YYYY');
   }
 }

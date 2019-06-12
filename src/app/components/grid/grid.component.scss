@@ -1,5 +1,11 @@
 .grid {
 
+  table {
+    th {
+      white-space: nowrap;
+    }
+  }
+
   input.editable {
     border: none;
     outline: none;

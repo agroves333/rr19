@@ -17,6 +17,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     {
       name: 'Project ID',
       field: 'id',
+      type: 'number',
+      partial: true,
       editable: false
     },
     {
