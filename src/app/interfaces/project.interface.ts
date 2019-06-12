@@ -1,4 +1,5 @@
 export interface Project {
+  id: number;
   title: string;
   division: string;
   project_owner: string;

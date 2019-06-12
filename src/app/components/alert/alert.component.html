@@ -1,0 +1,8 @@
+<div
+  [@openClose]="alertService.isOpen ? 'open' : 'closed'"
+  [ngClass]="{'alert-success': alertService.type=='success', 'alert-error': alertService.type=='error'}"
+  class="alert show"
+  role="alert"
+>
+  <div class="text-center">{{alertService.message}}</div>
+</div>

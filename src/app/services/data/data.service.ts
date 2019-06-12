@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
-import data from '../../mocks/projects.json';
+import data from '../../../mocks/projects.json';
 
 @Injectable({
   providedIn: 'root'

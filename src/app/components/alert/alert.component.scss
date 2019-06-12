@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  justify-content: center;
+
+  .alert {
+    position: absolute;
+    text-align: center;
+  }
+}

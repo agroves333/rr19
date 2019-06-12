@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DataService} from './services/data.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {DataService} from './services/data/data.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +7,11 @@ import {DataService} from './services/data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(public dataService: DataService) {}
+
+  @ViewChild('alert', {static: false}) alert;
+
+  constructor(public dataService: DataService) {
+  }
 
   ngOnInit() {
     this.dataService.init();
