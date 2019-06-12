@@ -20,8 +20,13 @@ export class DataService {
       projects: '++id, title, division, product_owner, budget, status, created, modified'
     });
 
-    Dexie.exists('rr19').then(exists => {
-      if (!exists) {
+    // Open DB
+    this.db.open().catch(err => {
+      console.error (err.stack || err);
+    });
+
+    this.db.projects.count(count => {
+      if (count === 0) {
         this.seed();
       }
     });
@@ -29,7 +34,12 @@ export class DataService {
 
   seed() {
     data.forEach(project => {
-      this.db.projects.add(project);
+      this.db.projects.add(project)
+        .then(res => {
+          console.log(res);
+        }).catch(err => {
+          console.log(err);
+      });
     });
   }
 }
