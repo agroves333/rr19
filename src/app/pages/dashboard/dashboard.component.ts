@@ -100,10 +100,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscriptions$.add(
       this.projectService.getProjects(filter)
       .subscribe(projects => {
-        this.totalProjects = this.projectService.totalProjects;
-        this.statusPercentages = this.projectService.statusPercentages;
-        this.totalBudget = this.utils.getCurrencyValue(this.projectService.totalBudget);
         this.projects = projects;
+        this.getStats();
       })
     );
   }
@@ -128,6 +126,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getStats() {
-    this.projectService.getStats();
+    const stats = this.projectService.getStats();
+    this.totalProjects = stats.totalProjects;
+    this.totalBudget = stats.totalBudget;
+    this.statusPercentages = stats.statusPercentages;
   }
 }

@@ -22,7 +22,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() data: any[];
   @Input() headers: string[];
-  @Input() debounceTime = 0;
+  @Input() debounceTime = 1000;
   @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
