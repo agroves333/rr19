@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
   totalProjects = 0;
+  totalBudget;
   gridHeaders = [
     {
       name: 'Actions',
@@ -97,6 +98,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.projectService.getProjects(filter)
       .subscribe(projects => {
         this.totalProjects = this.projectService.totalProjects;
+        this.totalBudget = this.getCurrencyValue(this.projectService.totalBudget);
         this.projects = projects;
       })
     );
@@ -119,5 +121,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         })
     );
+  }
+
+  getCurrencyValue(value) {
+    return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   }
 }

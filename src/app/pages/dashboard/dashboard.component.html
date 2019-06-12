@@ -1,6 +1,8 @@
 <div class="container">
   <h1>Project Dashboard</h1>
   <div class="stats p-2">
+    <div>Total Budget: {{totalBudget}}</div>
+    <div>Stat</div>
   </div>
   <div class="actions py-2 d-flex justify-content-between">
       <div class="d-flex">
@@ -23,7 +25,7 @@
         </div>
       </div>
       <div>
-        Displaying {{projects.length}} of {{totalProjects}} projects
+        Displaying {{projects?.length}} of {{totalProjects}} projects
       </div>
   </div>
   <app-grid

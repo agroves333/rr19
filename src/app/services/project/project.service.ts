@@ -11,6 +11,7 @@ export class ProjectService {
 
   filters = {};
   totalProjects = 0;
+  totalBudget = 0;
   db;
   constructor(private data: DataService) {
     this.db = this.data.db;
@@ -18,6 +19,7 @@ export class ProjectService {
 
   getProjects(projectFilter?): Observable<Project[]> {
     this.totalProjects = 0;
+    this.totalBudget = 0;
     if (projectFilter) {
       // Add filter to filter object
       if (projectFilter.value) {
@@ -28,6 +30,7 @@ export class ProjectService {
     }
     const projects = this.db.projects.filter(project => {
       this.totalProjects++;
+      this.totalBudget += Number(project.budget);
       const include = Object.keys(this.filters).reduce((acc, key) => {
 
         if (projectFilter.partial) {
