@@ -1,15 +1,31 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import Dexie from 'dexie';
+import { Subscription, from } from 'rxjs';
 import data from '../../../mocks/projects.json';
+import {AlertService} from '../alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
+export class DataService implements OnDestroy {
 
-  public db;
+  public db = null;
+  private subscriptions$: Subscription = new Subscription();
 
-  constructor() {
+  constructor(private alertService: AlertService) {
+    if (!this.db) {
+      this.subscriptions$.add(
+        this.init().subscribe(count => {
+          if (count === 0) {
+            this.seed();
+          }
+        })
+      );
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.unsubscribe();
   }
 
   init() {
@@ -25,22 +41,17 @@ export class DataService {
       console.error (err.stack || err);
     });
 
-    this.db.projects.count(count => {
-      if (count === 0) {
-        this.seed();
-      }
-    });
+    return from(this.db.projects.count());
   }
 
   seed() {
     data.forEach(project => {
-      this.db.projects.add(project)
-        .then(res => {
-          console.log(res);
-        }).catch(err => {
-          console.log(err);
-      });
+      this.db.projects.add(project);
     });
+    this.alertService.alert('success', `Database Seeded`);
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   }
 }
 

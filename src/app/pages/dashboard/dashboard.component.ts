@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import moment from 'moment';
 import {ProjectService} from '../../services/project/project.service';
 import { Project } from '../../interfaces/project.interface';
 import {AlertService} from '../../services/alert/alert.service';
-import moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       editable: true,
     },
   ];
-  private projectsSubscription$: Subscription = new Subscription();
+  private subscriptions$: Subscription = new Subscription();
 
   constructor(private projectService: ProjectService, private titleService: Title, private alertService: AlertService) {
     this.titleService.setTitle('Project Dashboard');
@@ -91,11 +91,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.projectsSubscription$.unsubscribe();
+    this.subscriptions$.unsubscribe();
   }
 
   getProjects(filter?) {
-    this.projectsSubscription$.add(
+    this.subscriptions$.add(
       this.projectService.getProjects(filter)
       .subscribe(projects => {
         this.totalProjects = this.projectService.totalProjects;
@@ -115,7 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         row.modified = project.modified;
       }
     });
-    this.projectsSubscription$.add(
+    this.subscriptions$.add(
       this.projectService.updateProject(project)
         .subscribe(success => {
           if (success) {
