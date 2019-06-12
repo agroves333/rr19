@@ -76,4 +76,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   setDateValue(date) {
     return moment(date, 'YYYY-MM-DD').format('MM/DD/YYYY');
   }
+
+  getValue(value, format) {
+    if (format === 'currency') {
+      return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+    }
+    return value;
+  }
 }

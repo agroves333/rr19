@@ -56,6 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       field: 'budget',
       partial: true,
       editable: true,
+      format: 'currency'
     },
     {
       name: 'Status',
