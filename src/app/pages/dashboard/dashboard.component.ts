@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   projects: Project[];
   totalProjects = 0;
   totalBudget;
-  statusPercentages = {};
+  statusCounts = {};
   gridHeaders = [
     {
       name: 'Actions',
@@ -129,6 +129,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const stats = this.projectService.getStats();
     this.totalProjects = stats.totalProjects;
     this.totalBudget = stats.totalBudget;
-    this.statusPercentages = stats.statusPercentages;
+    this.statusCounts = stats.statusCounts;
   }
 }

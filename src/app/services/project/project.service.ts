@@ -13,7 +13,7 @@ export class ProjectService {
   filters = {};
   totalProjects = 0;
   totalBudget = 0;
-  statusPercentages: any;
+  statusCounts: any;
   db;
   constructor(private data: DataService, private utils: UtilityService) {
     this.db = this.data.db;
@@ -23,7 +23,7 @@ export class ProjectService {
     // Initialize stats
     this.totalProjects = 0;
     this.totalBudget = 0;
-    this.statusPercentages = {};
+    this.statusCounts = {};
 
     if (projectFilter) {
       // Add filter to filter object
@@ -37,10 +37,10 @@ export class ProjectService {
       // Calculate stats
       this.totalProjects++;
       this.totalBudget += Number(project.budget);
-      if (typeof this.statusPercentages[project.status] === 'undefined') {
-        this.statusPercentages[project.status] = 0;
+      if (typeof this.statusCounts[project.status] === 'undefined') {
+        this.statusCounts[project.status] = 1;
       } else {
-        this.statusPercentages[project.status]++;
+        this.statusCounts[project.status]++;
       }
 
       const include = Object.keys(this.filters).reduce((acc, key) => {
@@ -84,7 +84,7 @@ export class ProjectService {
     return {
       totalProjects: this.totalProjects,
       totalBudget: this.utils.getCurrencyValue(this.totalBudget),
-      statusPercentages: this.statusPercentages
+      statusCounts: this.statusCounts
     };
   }
 }
