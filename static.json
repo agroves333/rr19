@@ -1,7 +1,6 @@
 {
   "root": "dist/rr19/",
   "routes": {
-    "/**": "index.html",
-    "/dashboard/**": "index.html"
+    "/**": "index.html"
   }
 }
