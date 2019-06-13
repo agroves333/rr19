@@ -14,4 +14,9 @@ export class UtilityService {
   formatPercentage(percentage) {
     return `${Math.floor(percentage  * 100)} %`;
   }
+
+  capitalize(s) {
+    if (typeof s !== 'string') { return ''; }
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
 }
