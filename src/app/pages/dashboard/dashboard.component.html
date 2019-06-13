@@ -1,12 +1,20 @@
 <div class="p-3">
-  <h2>Project Dashboard</h2>
-  <div class="stats p-2">
-    <div>Total Budget: {{totalBudget}}</div>
-    <div *ngIf="statusPercentages?.new">New: {{utils.formatPercentage(statusPercentages?.new / totalProjects)}}</div>
-    <div *ngIf="statusPercentages?.working">Working: {{utils.formatPercentage(statusPercentages?.working / totalProjects)}}</div>
-    <div *ngIf="statusPercentages?.archived">Archived: {{utils.formatPercentage(statusPercentages?.archived / totalProjects)}}</div>
+  <div class="d-flex justify-content-between">
+    <h2>Project Dashboard</h2>
+    <div class="stats p-2">
+      <div class="d-flex justify-content-between">Total Budget: <strong>{{totalBudget}}</strong></div>
+      <div class="d-flex justify-content-between" *ngIf="statusPercentages?.new">
+        New: <strong>{{statusPercentages?.new}} ({{utils.formatPercentage(statusPercentages?.new / totalProjects)}})</strong>
+      </div>
+      <div class="d-flex justify-content-between" *ngIf="statusPercentages?.working">
+        Working: <strong>{{statusPercentages?.working}} ({{utils.formatPercentage(statusPercentages?.working / totalProjects)}})</strong>
+      </div>
+      <div class="d-flex justify-content-between" *ngIf="statusPercentages?.archived">
+        Archived: <strong>{{statusPercentages?.archived}} ({{utils.formatPercentage(statusPercentages?.archived / totalProjects)}})</strong>
+      </div>
+    </div>
   </div>
-  <div class="actions py-2 d-flex justify-content-between">
+  <div class="actions py-2 d-flex justify-content-between align-items-end">
       <div class="d-flex">
         <button class="btn btn-outline-success mr-1">New Project</button>
         <div class="dropdown">
@@ -27,7 +35,7 @@
         </div>
       </div>
       <div>
-        Displaying {{projects?.length}} of {{totalProjects}} projects
+        Displaying <strong>{{projects?.length}}</strong> of <strong>{{totalProjects}}</strong> projects
       </div>
   </div>
   <app-grid
