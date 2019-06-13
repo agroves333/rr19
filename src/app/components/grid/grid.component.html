@@ -1,6 +1,6 @@
 <div class="grid">
   <table class="table">
-    <thead class="thead-dark">
+    <thead>
       <tr>
         <th *ngFor="let header of headers">{{header.name}}</th>
       </tr>
@@ -64,7 +64,7 @@
         <button
           *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
           type="button"
-          class="btn btn-primary"
+          class="btn btn-outline-primary"
         >
           {{header?.components?.view?.text}}
         </button>
