@@ -1,14 +1,23 @@
 .grid {
 
   table {
-    th {
+    border-collapse: collapse;
+
+    th, td {
+      vertical-align: middle;
       white-space: nowrap;
     }
   }
 
-  input.editable {
-    border: none;
-    outline: none;
-    width: 100%;
+  input {
+    &.editable {
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+
+    &[type="date"] {
+      max-width: 175px;
+    }
   }
 }
