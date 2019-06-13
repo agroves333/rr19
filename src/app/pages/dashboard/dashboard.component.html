@@ -3,17 +3,8 @@
     <h2>Project Dashboard</h2>
     <div class="stats p-2">
       <div class="d-flex justify-content-between">Total Budget: <strong>{{totalBudget}}</strong></div>
-      <div class="d-flex justify-content-between" *ngIf="statusCounts?.new">
-        New: <strong>{{statusCounts?.new}} ({{utils.formatPercentage(statusCounts?.new / totalProjects)}})</strong>
-      </div>
-      <div class="d-flex justify-content-between" *ngIf="statusCounts?.working">
-        Working: <strong>{{statusCounts?.working}} ({{utils.formatPercentage(statusCounts?.working / totalProjects)}})</strong>
-      </div>
-      <div class="d-flex justify-content-between" *ngIf="statusCounts?.delivered">
-        Delivered: <strong>{{statusCounts?.delivered}} ({{utils.formatPercentage(statusCounts?.delivered / totalProjects)}})</strong>
-      </div>
-      <div class="d-flex justify-content-between" *ngIf="statusCounts?.archived">
-        Archived: <strong>{{statusCounts?.archived}} ({{utils.formatPercentage(statusCounts?.archived / totalProjects)}})</strong>
+      <div *ngFor="let item of statusCounts | keyvalue" class="d-flex justify-content-between">
+        {{item.key}}: <strong>{{item.value}} ({{utils.formatPercentage(item.value / totalProjects)}})</strong>
       </div>
     </div>
   </div>

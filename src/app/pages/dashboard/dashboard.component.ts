@@ -119,6 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.projectService.updateProject(project)
         .subscribe(success => {
           if (success) {
+            this.getStats();
             this.alertService.alert('success', `Project ${project.id} Updated`);
           }
         })
