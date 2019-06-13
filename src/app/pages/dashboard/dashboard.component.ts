@@ -40,24 +40,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
     {
       name: 'Title',
       field: 'title',
+      type: 'text',
       partial: true,
       editable: true,
     },
     {
       name: 'Division',
       field: 'division',
+      type: 'text',
       partial: true,
       editable: true,
     },
     {
       name: 'Project Owner',
       field: 'project_owner',
+      type: 'text',
       partial: true,
       editable: true,
     },
     {
       name: 'Budget',
       field: 'budget',
+      type: 'text',
       partial: true,
       editable: true,
       format: 'currency'
@@ -67,6 +71,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       field: 'status',
       partial: true,
       editable: true,
+      type: 'select',
+      options: {
+        new: 'New',
+        working: 'Working',
+        delivered: 'Delivered',
+        archived: 'Archived'
+      }
     },
     {
       name: 'Create Date',

@@ -22,6 +22,16 @@
             [attr.data-field]="header.field"
             [attr.data-partial]="header.partial"
           >
+          <select
+            #filter
+            *ngIf="header.filter !== false && (header.type === 'select')"
+            class="form-control"
+            [attr.data-field]="header.field"
+            [attr.data-partial]="header.partial"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let item of header.options | keyvalue" [value]="item.key">{{item.value}}</option>
+          </select>
           <input
             #filter
             *ngIf="header.filter !== false && header.type === 'date'"
@@ -45,7 +55,7 @@
       <td *ngFor="let header of headers">
         <input
           #cell
-          *ngIf="header.editable && header.type !== 'date'"
+          *ngIf="header.editable && header.type === 'text'"
           class="editable"
           type="text"
           value="{{getValue(row[header.field], header.format)}}"
@@ -60,6 +70,22 @@
           [attr.data-field]="header.field"
           (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value), row: row})"
         >
+        <select
+          #cell
+          *ngIf="header.editable && header.type === 'select'"
+          class="formControl"
+          [value]="row[header.field]"
+          [attr.data-field]="header.field"
+          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
+        >
+          <option
+            *ngFor="let item of header.options | keyvalue"
+            [value]="item.key"
+            [selected]="item.key === row[header.field]"
+          >
+            {{item.value}}
+          </option>
+        </select>
         <span *ngIf="!header.editable">{{getValue(row[header.field], header.format)}}</span>
         <button
           *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
