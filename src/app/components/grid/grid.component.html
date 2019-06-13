@@ -73,7 +73,7 @@
         <select
           #cell
           *ngIf="header.editable && header.type === 'select'"
-          class="formControl"
+          class="form-control"
           [value]="row[header.field]"
           [attr.data-field]="header.field"
           (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
