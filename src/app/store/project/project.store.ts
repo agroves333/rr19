@@ -43,9 +43,9 @@ export class ProjectStore extends Store<ProjectState> implements OnDestroy {
   getProjects(filters?): Project[] {
     return this.state.projects.filter(project => {
       const include = Object.keys(filters).reduce((acc, key) => {
-        if (filters.partial) {
+        if (filters[key].partial) {
           // Handle full text search for text inputs
-          const partial = new RegExp(filters[key], 'i');
+          const partial = new RegExp(filters[key].value, 'i');
           acc = acc && partial.test(project[key]);
         } else if (filters.type === 'date') {
           // Handle date ranges
@@ -65,7 +65,7 @@ export class ProjectStore extends Store<ProjectState> implements OnDestroy {
           }
         } else {
           // Handle non-partial text searches
-          acc = acc && filters[key] === project[key];
+          acc = acc && filters[key].value === project[key];
         }
         return acc;
       }, true);

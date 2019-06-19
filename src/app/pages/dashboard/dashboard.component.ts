@@ -112,7 +112,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (filter) {
       // Add filter to filter object
       if (filter.value) {
-        this.filters[filter.field] = filter.value;
+        this.filters[filter.field] = {
+          value: filter.value,
+          partial: filter.partial,
+          type: filter.type
+        };
       } else {
         delete this.filters[filter.field];
       }
