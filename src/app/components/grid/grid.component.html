@@ -1,100 +1,109 @@
 <div class="grid">
-  <table class="table">
-    <thead>
-      <tr>
-        <th *ngFor="let header of headers">{{header.name}}</th>
-      </tr>
-      <tr>
+  <form [formGroup]="gridForm" (ngSubmit)="onSubmit()">
+    <table class="table">
+      <thead>
+        <tr>
+          <th *ngFor="let header of headers">{{header.name}}</th>
+        </tr>
+        <tr formGroupName="filters">
+          <td *ngFor="let header of headers">
+            <div>
+              <input
+                *ngIf="(header?.type === 'text' || header?.type === undefined)"
+                class="form-control"
+                type="text"
+                [formControlName]="header?.field"
+                [attr.data-field]="header?.field"
+                [attr.data-partial]="header?.partial"
+                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+              >
+              <input
+                *ngIf="header?.type === 'number'"
+                class="form-control"
+                type="number"
+                [formControlName]="header?.field"
+                [attr.data-field]="header?.field"
+                [attr.data-partial]="header?.partial"
+                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+              >
+              <select
+                *ngIf="header?.type === 'select'"
+                class="form-control"
+                [formControlName]="header?.field"
+                [attr.data-field]="header?.field"
+                [attr.data-partial]="header?.partial"
+                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+              >
+                <option value="">Any</option>
+                <option *ngFor="let item of header?.options | keyvalue" [value]="item.key">{{item.value}}</option>
+              </select>
+              <input
+                *ngIf="header?.type === 'date'"
+                class="form-control mb-1"
+                type="date"
+                [formControlName]="header?.field"
+                [attr.data-field]="header?.field + '_to'"
+                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+              >
+              <input
+                *ngIf="header?.type === 'date'"
+                class="form-control"
+                type="date"
+                [formControlName]="header?.field"
+                [attr.data-field]="header?.field + '_from'"
+                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+              >
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+      <tr *ngFor="let row of data">
         <td *ngFor="let header of headers">
           <input
-            #filter
-            *ngIf="header.filter !== false && (header.type === 'text' || header.type === undefined)"
-            class="form-control"
+            #cell
+            *ngIf="header.editable && header.type === 'text'"
+            class="editable"
             type="text"
-            [attr.data-field]="header.field"
-            [attr.data-partial]="header.partial"
+            value="{{getValue(row[header.field], header.format)}}"
+            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
           >
           <input
-            #filter
-            *ngIf="header.filter !== false && (header.type === 'number')"
-            class="form-control"
-            type="number"
+            #cell
+            *ngIf="header.editable && header.type === 'date'"
+            class="editable"
+            type="date"
+            value="{{getDateValue(row[header.field])}}"
             [attr.data-field]="header.field"
-            [attr.data-partial]="header.partial"
+            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value), row: row})"
           >
           <select
-            #filter
-            *ngIf="header.filter !== false && (header.type === 'select')"
+            #cell
+            *ngIf="header.editable && header.type === 'select'"
             class="form-control"
+            [value]="row[header.field]"
             [attr.data-field]="header.field"
-            [attr.data-partial]="header.partial"
+            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
           >
-            <option value="">Any</option>
-            <option *ngFor="let item of header.options | keyvalue" [value]="item.key">{{item.value}}</option>
+            <option
+              *ngFor="let item of header.options | keyvalue"
+              [value]="item.key"
+              [selected]="item.key === row[header.field]"
+            >
+              {{item.value}}
+            </option>
           </select>
-          <input
-            #filter
-            *ngIf="header.filter !== false && header.type === 'date'"
-            class="form-control mb-1"
-            type="date"
-            [attr.data-field]="header.field + '_to'"
+          <span *ngIf="!header.editable">{{getValue(row[header.field], header.format)}}</span>
+          <button
+            *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
+            type="button"
+            class="btn btn-outline-primary"
           >
-          <input
-            #filter
-            *ngIf="header.filter !== false && header.type === 'date'"
-            class="form-control"
-            type="date"
-            [attr.data-field]="header.field + '_from'"
-          >
+            {{header?.components?.view?.text}}
+          </button>
         </td>
       </tr>
-    </thead>
-    <tbody>
-    </tbody>
-    <tr *ngFor="let row of data">
-      <td *ngFor="let header of headers">
-        <input
-          #cell
-          *ngIf="header.editable && header.type === 'text'"
-          class="editable"
-          type="text"
-          value="{{getValue(row[header.field], header.format)}}"
-          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
-        >
-        <input
-          #cell
-          *ngIf="header.editable && header.type === 'date'"
-          class="editable"
-          type="date"
-          value="{{getDateValue(row[header.field])}}"
-          [attr.data-field]="header.field"
-          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value), row: row})"
-        >
-        <select
-          #cell
-          *ngIf="header.editable && header.type === 'select'"
-          class="form-control"
-          [value]="row[header.field]"
-          [attr.data-field]="header.field"
-          (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
-        >
-          <option
-            *ngFor="let item of header.options | keyvalue"
-            [value]="item.key"
-            [selected]="item.key === row[header.field]"
-          >
-            {{item.value}}
-          </option>
-        </select>
-        <span *ngIf="!header.editable">{{getValue(row[header.field], header.format)}}</span>
-        <button
-          *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
-          type="button"
-          class="btn btn-outline-primary"
-        >
-          {{header?.components?.view?.text}}
-        </button>
-      </td>
-    </tr>
-  </table>
+    </table>
+  </form>
 </div>

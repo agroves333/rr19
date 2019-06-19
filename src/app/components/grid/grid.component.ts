@@ -5,10 +5,9 @@ import {
   OnDestroy,
   Input,
   Output,
-  QueryList,
-  ViewChildren,
   EventEmitter
 } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Subscription, Subject, fromEvent } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import moment from 'moment';
@@ -18,52 +17,35 @@ import moment from 'moment';
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
-export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
+export class GridComponent implements OnInit, OnDestroy {
 
   @Input() data: any[];
-  @Input() headers: string[];
+  @Input() headers: any[];
   @Input() debounceTime = 1000;
-  @ViewChildren('filter') filters: QueryList<any>;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
   private subscriptions$ = new Subscription();
   editCellKeyups$ = new Subject<Event>();
+  gridForm = new FormGroup({});
 
-  constructor() {
+  constructor(private fb: FormBuilder) {
   }
 
   ngOnInit() {
+    const filterGroup = new FormGroup({});
+    this.headers.map(header => {
+      if (header.field) {
+        filterGroup.addControl(header.field, new FormControl());
+      }
+    });
+
+    this.gridForm.addControl('filters', filterGroup);
+
     this.editCellKeyups$
       .pipe(debounceTime(1000))
       .subscribe(data => {
         this.editCell.emit(data);
       });
-  }
-
-  ngAfterViewInit() {
-    this.filters.forEach(filter => {
-      const filter$ = fromEvent(filter.nativeElement, 'input')
-        .pipe(
-          map((e: any) => {
-            const el = e.target;
-            let value = el.value;
-            const type = el.type;
-            if (type === 'date' && value) {
-              value = moment(value, 'YYYY-MM-DD').format('MM/DD/YYYY');
-            }
-            return {
-              value,
-              type,
-              field: el && el.dataset && el.dataset.field,
-              partial: el && el.dataset && el.dataset.partial,
-            };
-          }),
-          debounceTime(this.debounceTime)
-        );
-      this.subscriptions$.add(filter$.subscribe(x => {
-        this.filter.emit(x);
-      }));
-    });
   }
 
   ngOnDestroy() {
@@ -83,5 +65,19 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
       return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
     }
     return value;
+  }
+
+  updateFilters(field, value, partial, type) {
+    this.gridForm.patchValue({
+      filters: {
+        [field]: value
+      }
+    });
+    this.filter.emit({
+      field,
+      value,
+      partial,
+      type
+    });
   }
 }
