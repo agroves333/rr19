@@ -82,7 +82,7 @@ export class ProjectService {
   }
 
   updateProject(project) {
-    return from(this.db.projects.update(project.id, project));
+    // return from(this.db.projects.update(project.id, project));
   }
 
   getStats() {
