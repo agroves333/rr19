@@ -5,12 +5,10 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectionStrategy
 } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import moment from 'moment';
 
 @Component({
@@ -29,7 +27,7 @@ export class GridComponent implements OnInit, OnDestroy {
   private subscriptions$ = new Subscription();
   gridForm = new FormGroup({});
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor() {}
 
   ngOnInit() {
     const filterGroup = new FormGroup({});
@@ -84,7 +82,6 @@ export class GridComponent implements OnInit, OnDestroy {
       type,
       id
     });
-    this.cd.markForCheck();
   }
 
   getDateValue(date) {
