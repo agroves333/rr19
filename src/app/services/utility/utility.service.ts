@@ -11,6 +11,13 @@ export class UtilityService {
     return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
   }
 
+  convertCurrencyToNumber(value) {
+    if (typeof value === 'string') {
+      return Number(value.replace(/[^0-9.-]+/g, ''));
+    }
+    return value;
+  }
+
   formatPercentage(percentage) {
     return `${Math.floor(percentage  * 100)} %`;
   }

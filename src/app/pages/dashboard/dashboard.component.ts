@@ -1,6 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef} from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { map, filter, distinctUntilChanged } from 'rxjs/operators';
 import moment from 'moment';
 import { ProjectStore } from '../../store/project/project.store';
 import { Project } from '../../interfaces/project.interface';
@@ -14,7 +15,7 @@ import {UtilityService} from '../../services/utility/utility.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  projects: Project[];
+  projects: Observable<Project[]>;
   totalProjects = 0;
   totalBudget;
   statusCounts = {};
@@ -61,10 +62,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     {
       name: 'Budget',
       field: 'budget',
-      type: 'text',
+      type: 'currency',
       partial: true,
-      editable: true,
-      format: 'currency'
+      editable: true
     },
     {
       name: 'Status',
@@ -92,11 +92,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       editable: true,
     },
   ];
-  filters = {};
+  filters: any = {};
   private subscriptions$: Subscription = new Subscription();
 
   constructor(private projectStore: ProjectStore, private titleService: Title, private alertService: AlertService,
-              private utils: UtilityService) {
+              private utils: UtilityService, private cd: ChangeDetectorRef) {
     this.titleService.setTitle('Project Dashboard');
   }
 
@@ -108,41 +108,58 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscriptions$.unsubscribe();
   }
 
-  getProjects(filter?) {
-    if (filter) {
+  getProjects(projectFilter?) {
+    if (projectFilter) {
       // Add filter to filter object
-      if (filter.value) {
-        this.filters[filter.field] = {
-          value: filter.value,
-          partial: filter.partial,
-          type: filter.type
+      if (projectFilter.value) {
+        this.filters[projectFilter.field] = {
+          value: projectFilter.value,
+          partial: projectFilter.partial,
+          type: projectFilter.type
         };
       } else {
-        delete this.filters[filter.field];
+        delete this.filters[projectFilter.field];
       }
     }
 
-    this.projects = this.projectStore.getProjects(this.filters);
+    this.projects = this.projectStore.state$.pipe(
+      map(state => state.projects),
+      filter(project => {
+        const include = Object.keys(this.filters).reduce((acc, key) => {
+          if (this.filters[key].partial) {
+            // Handle full text search for text inputs
+            const partial = new RegExp(this.filters[key].value, 'i');
+            acc = acc && partial.test(project[key]);
+          } else if (this.filters.type === 'date') {
+            // Handle date ranges
+            const isFromDate = /_from$/i.test(key);
+            const isToDate = /_to$/i.test(key);
+
+            if (isFromDate || isToDate) {
+              const dateKey = key.replace(/_(to|from)$/ig, '');
+              const filterDate = moment(this.filters[key], 'MM/DD/YYYY');
+              const projectDate = moment(project[dateKey], 'MM/DD/YYYY');
+              if (isFromDate) {
+                acc = acc && filterDate.isSameOrAfter(projectDate);
+              } else if (isToDate) {
+                acc = acc && filterDate.isSameOrBefore(projectDate);
+              }
+              console.log(dateKey);
+            }
+          } else {
+            // Handle non-partial text searches
+            acc = acc && this.filters[key].value === project[key];
+          }
+          return acc;
+        }, true);
+        return include;
+      })
+    );
   }
 
-  updateProject(data) {
-    // const project = {...data.row, [data.field]: data.value};
-    // project.modified = moment().format('MM/DD/YYYY');
-    // // Update modified cell
-    // this.projects.forEach(row => {
-    //   if (row.id === data.id) {
-    //     row.modified = project.modified;
-    //   }
-    // });
-    // this.subscriptions$.add(
-    //   this.projectService.updateProject(project)
-    //     .subscribe(success => {
-    //       if (success) {
-    //         this.getStats();
-    //         this.alertService.alert('success', `Project ${project.id} Updated`);
-    //       }
-    //     })
-    // );
+  patchProject({field, value, type, id}) {
+    this.projectStore.patchProject({field, value, type, id});
+    this.cd.markForCheck();
   }
 
   getStats() {

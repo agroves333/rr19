@@ -1,5 +1,5 @@
 <div class="grid">
-  <form [formGroup]="gridForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="gridForm">
     <table class="table">
       <thead>
         <tr>
@@ -59,32 +59,30 @@
       </thead>
       <tbody>
       </tbody>
-      <tr *ngFor="let row of data">
+      <tr formGroupName="grid" *ngFor="let row of rows; trackBy: trackByFn">
         <td *ngFor="let header of headers">
           <input
-            #cell
-            *ngIf="header.editable && header.type === 'text'"
+            *ngIf="header.editable && (header.type === 'text' || header.type === 'currency')"
             class="editable"
             type="text"
-            value="{{getValue(row[header.field], header.format)}}"
-            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
+            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+            [formControlName]="header?.field + '_' + row.id"
+            [attr.data-field]="header.field"
           >
           <input
-            #cell
             *ngIf="header.editable && header.type === 'date'"
             class="editable"
             type="date"
-            value="{{getDateValue(row[header.field])}}"
+            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+            [formControlName]="header?.field + '_' + row.id"
             [attr.data-field]="header.field"
-            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: setDateValue(cell.value), row: row})"
           >
           <select
-            #cell
             *ngIf="header.editable && header.type === 'select'"
             class="form-control"
-            [value]="row[header.field]"
+            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+            [formControlName]="header?.field + '_' + row.id"
             [attr.data-field]="header.field"
-            (input)="editCellKeyups$.next({id: row.id, field: header.field, value: cell.value, row: row})"
           >
             <option
               *ngFor="let item of header.options | keyvalue"
@@ -94,7 +92,7 @@
               {{item.value}}
             </option>
           </select>
-          <span *ngIf="!header.editable">{{getValue(row[header.field], header.format)}}</span>
+          <span *ngIf="!header.editable">{{getValue(row[header.field], header.type)}}</span>
           <button
             *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
             type="button"

@@ -1,55 +1,90 @@
 import {
   Component,
   OnInit,
-  AfterViewInit,
   OnDestroy,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Subscription, Subject, fromEvent } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import moment from 'moment';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss']
+  styleUrls: ['./grid.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent implements OnInit, OnDestroy {
-
-  @Input() data: any[];
+  @Input() data: Observable<any[]>;
+  rows: any[];
   @Input() headers: any[];
   @Input() debounceTime = 1000;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
   private subscriptions$ = new Subscription();
-  editCellKeyups$ = new Subject<Event>();
   gridForm = new FormGroup({});
 
-  constructor(private fb: FormBuilder) {
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     const filterGroup = new FormGroup({});
-    this.headers.map(header => {
+    this.headers.forEach(header => {
       if (header.field) {
         filterGroup.addControl(header.field, new FormControl());
       }
     });
 
-    this.gridForm.addControl('filters', filterGroup);
-
-    this.editCellKeyups$
-      .pipe(debounceTime(1000))
-      .subscribe(data => {
-        this.editCell.emit(data);
+    this.data.subscribe(rows => {
+      const gridGroup = new FormGroup({});
+      rows.forEach(row => {
+        this.headers.forEach(header => {
+          if (header.field) {
+            const inputName = `${header.field}_${row.id}`;
+            const defaultValue = this.getValue(row[header.field], header.type);
+            const cellFormControl = new FormControl(defaultValue);
+            gridGroup.addControl(inputName, cellFormControl);
+          }
+        });
       });
+      this.rows = [...rows];
+      this.gridForm.removeControl('filters');
+      this.gridForm.removeControl('grid');
+      this.gridForm.addControl('filters', filterGroup);
+      this.gridForm.addControl('grid', gridGroup);
+    });
   }
 
   ngOnDestroy() {
     this.subscriptions$.unsubscribe();
+  }
+
+  updateFilters(field, value, partial, type) {
+    this.gridForm.patchValue({
+      filters: {
+        [field]: value
+      }
+    });
+    this.filter.emit({
+      field,
+      value,
+      partial,
+      type
+    });
+  }
+
+  handleChange(field, value, type, id) {
+    this.editCell.emit({
+      field,
+      value,
+      type,
+      id
+    });
+    this.cd.markForCheck();
   }
 
   getDateValue(date) {
@@ -67,17 +102,8 @@ export class GridComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  updateFilters(field, value, partial, type) {
-    this.gridForm.patchValue({
-      filters: {
-        [field]: value
-      }
-    });
-    this.filter.emit({
-      field,
-      value,
-      partial,
-      type
-    });
+  trackByFn(index, item ) {
+    console.log( 'TrackBy:', item.id, 'at index', index );
+    return( item.id );
   }
 }

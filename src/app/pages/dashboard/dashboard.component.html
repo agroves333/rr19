@@ -36,7 +36,7 @@
     [headers]="gridHeaders"
     [data]="projects"
     (filter)="getProjects($event)"
-    (editCell)="updateProject($event)"
+    (editCell)="patchProject($event)"
   >
   </app-grid>
 </div>
