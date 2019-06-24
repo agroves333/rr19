@@ -100,7 +100,6 @@ export class GridComponent implements OnInit, OnDestroy {
   }
 
   trackByFn(index, item ) {
-    console.log( 'TrackBy:', item.id, 'at index', index );
     return( item.id );
   }
 }
