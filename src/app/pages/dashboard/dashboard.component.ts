@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ChangeDetectorRef} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import { Observable, Subscription } from 'rxjs';
-import { map, filter, distinctUntilChanged } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import moment from 'moment';
 import { ProjectStore } from '../../store/project/project.store';
 import { Project } from '../../interfaces/project.interface';
@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subscriptions$: Subscription = new Subscription();
 
   constructor(private projectStore: ProjectStore, private titleService: Title, private alertService: AlertService,
-              private utils: UtilityService, private cd: ChangeDetectorRef) {
+              private utils: UtilityService) {
     this.titleService.setTitle('Project Dashboard');
   }
 
@@ -159,7 +159,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   patchProject({field, value, type, id}) {
     this.projectStore.patchProject({field, value, type, id});
-    this.cd.markForCheck();
   }
 
   getStats() {
