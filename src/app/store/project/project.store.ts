@@ -1,15 +1,15 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { Store } from '../store';
 import { Project } from '../../interfaces/project.interface';
-import { ProjectState } from './project.state';
 import mockData from '../../../mocks/projects.json';
-import {UtilityService} from '../../services/utility/utility.service';
+import { Store } from '../store';
+import { ProjectState } from './project.state';
+import { UtilityService } from '../../services/utility/utility.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectStore extends Store<ProjectState> implements OnDestroy {
+export class ProjectStore extends Store<ProjectState> {
 
   constructor(public utils: UtilityService) {
     super(new ProjectState());
@@ -23,11 +23,6 @@ export class ProjectStore extends Store<ProjectState> implements OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    // Persist projects when refreshed
-    localStorage.setItem('projects', JSON.stringify(this.state.projects));
-  }
-
   seedProjects() {
     const serializedProjects = localStorage.getItem('projects');
     if (serializedProjects) {
@@ -36,7 +31,9 @@ export class ProjectStore extends Store<ProjectState> implements OnDestroy {
     return mockData.map((project, id) => {
       return {
         ...project,
-        id
+        id,
+        created: moment(project.created, 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        modified: moment(project.modified, 'MM/DD/YYYY').format('YYYY-MM-DD')
       };
     });
   }

@@ -13,8 +13,6 @@
                 class="form-control"
                 type="text"
                 [formControlName]="header?.field"
-                [attr.data-field]="header?.field"
-                [attr.data-partial]="header?.partial"
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
               <input
@@ -22,16 +20,12 @@
                 class="form-control"
                 type="number"
                 [formControlName]="header?.field"
-                [attr.data-field]="header?.field"
-                [attr.data-partial]="header?.partial"
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
               <select
                 *ngIf="header?.type === 'select'"
                 class="form-control"
                 [formControlName]="header?.field"
-                [attr.data-field]="header?.field"
-                [attr.data-partial]="header?.partial"
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
                 <option value="">Any</option>
@@ -42,7 +36,6 @@
                 class="form-control mb-1"
                 type="date"
                 [formControlName]="header?.field"
-                [attr.data-field]="header?.field + '_to'"
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
               <input
@@ -50,7 +43,6 @@
                 class="form-control"
                 type="date"
                 [formControlName]="header?.field"
-                [attr.data-field]="header?.field + '_from'"
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
             </div>
@@ -58,50 +50,52 @@
         </tr>
       </thead>
       <tbody>
+        <tr formGroupName="grid" *ngFor="let row of data; trackBy: trackByFn">
+          <ng-container>
+            <td *ngFor="let header of headers">
+              <input
+                *ngIf="header.editable && (header.type === 'text' || header.type === 'currency')"
+                class="editable"
+                type="text"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+                [formControlName]="header?.field + '_' + row.id"
+                [value]="getValue(row, header.field, header.type)"
+              >
+              <input
+                *ngIf="header.editable && header.type === 'date'"
+                class="editable"
+                type="date"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+                [formControlName]="header?.field + '_' + row.id"
+                [value]="getValue(row, header.field, header.type)"
+              >
+              <select
+                *ngIf="header.editable && header.type === 'select'"
+                class="form-control"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+                [formControlName]="header?.field + '_' + row.id"
+                [value]="getValue(row, header.field, header.type)"
+              >
+                <option
+                  *ngFor="let item of header.options | keyvalue"
+                  [value]="item.key"
+                  [selected]="item.key === row[header.field]"
+                >
+                  {{item.value}}
+                </option>
+              </select>
+              <span *ngIf="!header.editable">{{getValue(row, header.field, header.type)}}</span>
+              <button
+                *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
+                type="button"
+                class="btn btn-outline-primary"
+              >
+                {{header?.components?.view?.text}}
+              </button>
+            </td>
+          </ng-container>
+        </tr>
       </tbody>
-      <tr formGroupName="grid" *ngFor="let row of rows; trackBy: trackByFn">
-        <td *ngFor="let header of headers">
-          <input
-            *ngIf="header.editable && (header.type === 'text' || header.type === 'currency')"
-            class="editable"
-            type="text"
-            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
-            [formControlName]="header?.field + '_' + row.id"
-            [attr.data-field]="header.field"
-          >
-          <input
-            *ngIf="header.editable && header.type === 'date'"
-            class="editable"
-            type="date"
-            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
-            [formControlName]="header?.field + '_' + row.id"
-            [attr.data-field]="header.field"
-          >
-          <select
-            *ngIf="header.editable && header.type === 'select'"
-            class="form-control"
-            (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
-            [formControlName]="header?.field + '_' + row.id"
-            [attr.data-field]="header.field"
-          >
-            <option
-              *ngFor="let item of header.options | keyvalue"
-              [value]="item.key"
-              [selected]="item.key === row[header.field]"
-            >
-              {{item.value}}
-            </option>
-          </select>
-          <span *ngIf="!header.editable">{{getValue(row[header.field], header.type)}}</span>
-          <button
-            *ngIf="header.type === 'actions' && header?.components?.view?.component === 'button'"
-            type="button"
-            class="btn btn-outline-primary"
-          >
-            {{header?.components?.view?.text}}
-          </button>
-        </td>
-      </tr>
     </table>
   </form>
 </div>

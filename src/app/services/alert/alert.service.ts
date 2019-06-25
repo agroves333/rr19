@@ -11,7 +11,7 @@ export class AlertService {
 
   constructor() { }
 
-  alert(type, message = 'success') {
+  alert(message, type = 'success') {
     this.message = '';
     this.type = type;
     this.isOpen = true;
