@@ -1,26 +1,23 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   Input,
   Output,
   EventEmitter
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
 })
-export class GridComponent implements OnInit, OnDestroy {
+export class GridComponent implements OnInit {
   @Input() data: any[];
   @Input() headers: any[];
   @Input() debounceTime = 1000;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
-  private subscriptions$ = new Subscription();
   gridForm = new FormGroup({});
 
   constructor() {}
@@ -49,10 +46,6 @@ export class GridComponent implements OnInit, OnDestroy {
         this.gridForm.addControl('grid', gridGroup);
       });
     }
-  }
-
-  ngOnDestroy() {
-    this.subscriptions$.unsubscribe();
   }
 
   updateFilters(field, value, partial, type) {
