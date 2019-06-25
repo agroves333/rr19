@@ -15,7 +15,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class GridComponent implements OnInit {
   @Input() data: any[];
   @Input() headers: any[];
-  @Input() debounceTime = 1000;
   @Output() filter: EventEmitter<any> = new EventEmitter();
   @Output() editCell: EventEmitter<any> = new EventEmitter();
   gridForm = new FormGroup({});
