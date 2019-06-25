@@ -14,6 +14,7 @@ import { UtilityService } from '../../services/utility/utility.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
+  totalProjects: number;
   gridHeaders = [
     {
       name: 'Actions',
@@ -100,6 +101,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.projects = state.projects;
       })
     );
+    this.totalProjects = this.projectStore.projects.length;
   }
 
   ngOnDestroy(): void {

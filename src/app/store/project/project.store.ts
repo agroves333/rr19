@@ -22,7 +22,7 @@ export class ProjectStore extends Store<ProjectState> {
     // Persist data in localstorage on browser refresh
     window.addEventListener('beforeunload', () => {
       if (this.state.projects) {
-        localStorage.setItem('projects', JSON.stringify(this.state.projects));
+        localStorage.setItem('projects', JSON.stringify(this.projects));
       }
     });
   }
