@@ -6,6 +6,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import {UtilityService} from '../../services/utility/utility.service';
 
 @Component({
   selector: 'app-grid',
@@ -19,7 +20,7 @@ export class GridComponent implements OnInit {
   @Output() editCell: EventEmitter<any> = new EventEmitter();
   gridForm = new FormGroup({});
 
-  constructor() {}
+  constructor(private utils: UtilityService) {}
 
   ngOnInit() {
     const filterGroup = new FormGroup({});
@@ -74,6 +75,13 @@ export class GridComponent implements OnInit {
       return value;
     }
     return '';
+  }
+
+  handleCurrencyBlur(field, value, id) {
+    const newValue = Number(this.utils.convertCurrencyToNumber(value)).toLocaleString('en-US', {
+      style: 'currency', currency: 'USD'
+    });
+    this.gridForm.get(`grid.${field}_${id}`).setValue(newValue);
   }
 
   trackByFn(index, item) {

@@ -16,7 +16,7 @@
                 (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
               >
               <input
-                *ngIf="header?.type === 'number'"
+                *ngIf="header?.type === 'number' || header?.type === 'currency'"
                 class="form-control"
                 type="number"
                 [formControlName]="header?.field"
@@ -54,27 +54,35 @@
           <ng-container>
             <td *ngFor="let header of headers">
               <input
-                *ngIf="header.editable && (header.type === 'text' || header.type === 'currency')"
+                *ngIf="header.editable && header.type === 'text'"
                 class="editable"
                 type="text"
-                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
                 [formControlName]="header?.field + '_' + row.id"
                 [value]="getValue(row, header.field, header.type)"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+              >
+              <input
+                *ngIf="header.editable && header.type === 'currency'"
+                class="editable"
+                type="text"
+                [formControlName]="header?.field + '_' + row.id"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
+                (blur)="handleCurrencyBlur(header.field, $event.target.value, row.id)"
               >
               <input
                 *ngIf="header.editable && header.type === 'date'"
                 class="editable"
                 type="date"
-                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
                 [formControlName]="header?.field + '_' + row.id"
                 [value]="getValue(row, header.field, header.type)"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
               >
               <select
                 *ngIf="header.editable && header.type === 'select'"
                 class="form-control"
-                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
                 [formControlName]="header?.field + '_' + row.id"
                 [value]="getValue(row, header.field, header.type)"
+                (input)="handleChange(header.field, $event.target.value, header.type, row.id)"
               >
                 <option
                   *ngFor="let item of header.options | keyvalue"
