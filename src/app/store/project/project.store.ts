@@ -150,7 +150,7 @@ export class ProjectStore extends Store<ProjectState> {
     let totalBudget = 0;
     const statusCounts = {};
     this.state.projects.forEach(project => {
-      totalBudget++;
+      totalBudget += project.budget;
       if (typeof statusCounts[project.status] === 'undefined') {
         statusCounts[project.status] = 1;
       } else {

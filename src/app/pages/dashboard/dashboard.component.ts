@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import moment from 'moment';
 import { ProjectStore } from '../../store/project/project.store';
 import { Project } from '../../interfaces/project.interface';
 import { AlertService } from '../../services/alert/alert.service';
@@ -116,12 +114,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.projectStore.updateProject({field, value, type, id});
     const columnName = this.gridHeaders.find(header => header.field === field).name;
     this.alertService.alert(`Project ${id} ${columnName} Updated`);
-  }
-
-  getStats() {
-    // const stats = this.projectService.getStats();
-    // this.totalProjects = stats.totalProjects;
-    // this.totalBudget = stats.totalBudget;
-    // this.statusCounts = stats.statusCounts;
   }
 }

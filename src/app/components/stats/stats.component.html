@@ -1,0 +1,6 @@
+<div class="stats p-2">
+  <div class="d-flex justify-content-between">Total Budget: <strong>{{utils.getCurrencyValue(totalBudget)}}</strong></div>
+  <div *ngFor="let item of statusCounts | keyvalue" class="d-flex justify-content-between">
+    {{utils.capitalize(item.key)}}: <strong>{{item.value}} ({{utils.formatPercentage(item.value / totalProjects)}})</strong>
+  </div>
+</div>
