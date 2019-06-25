@@ -11,8 +11,6 @@ import { UtilityService } from '../../services/utility/utility.service';
 })
 export class ProjectStore extends Store<ProjectState> {
   filters: any = {};
-  // All projects from either localstorage or json file
-  projects: Project[];
 
   constructor(public utils: UtilityService) {
     super(new ProjectState());
@@ -21,7 +19,7 @@ export class ProjectStore extends Store<ProjectState> {
     // Persist data in localstorage on browser refresh
     window.addEventListener('beforeunload', () => {
       if (this.state.projects) {
-        localStorage.setItem('projects', JSON.stringify(this.projects));
+        localStorage.setItem('projects', JSON.stringify(this.state.projects));
       }
     });
   }
@@ -29,10 +27,11 @@ export class ProjectStore extends Store<ProjectState> {
   initialize() {
     const serializedProjects = localStorage.getItem('projects');
 
+    let projects = [];
     if (serializedProjects) {
-      this.projects = JSON.parse(serializedProjects);
+      projects = JSON.parse(serializedProjects);
     } else {
-      this.projects = mockData.map((project, id) => {
+      projects = mockData.map((project, id) => {
         return {
           ...project,
           id,
@@ -45,7 +44,7 @@ export class ProjectStore extends Store<ProjectState> {
     let totalBudget = 0;
     const statusCounts = {};
 
-    this.projects.forEach(project => {
+    projects.forEach(project => {
       totalBudget += project.budget;
 
       if (typeof statusCounts[project.status] === 'undefined') {
@@ -57,7 +56,8 @@ export class ProjectStore extends Store<ProjectState> {
 
     this.setState({
       ...this.state,
-      projects: this.projects,
+      projects,
+      filteredProjects: projects,
       stats: {
         totalBudget,
         statusCounts
@@ -80,7 +80,7 @@ export class ProjectStore extends Store<ProjectState> {
     }
     let totalBudget = 0;
     const statusCounts = {};
-    const projects = this.projects.filter(project => {
+    const projects = this.state.projects.filter(project => {
       const include = Object.keys(this.filters).reduce((acc, key) => {
         if (this.filters[key].partial) {
           // Handle full text search for text inputs
@@ -122,7 +122,7 @@ export class ProjectStore extends Store<ProjectState> {
     });
     this.setState({
       ...this.state,
-      projects,
+      filteredProjects: projects,
       stats: {
         totalBudget,
         statusCounts
@@ -165,5 +165,7 @@ export class ProjectStore extends Store<ProjectState> {
         statusCounts
       }
     });
+
+    this.filterProjects({});
   }
 }

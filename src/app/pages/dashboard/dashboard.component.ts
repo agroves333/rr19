@@ -14,6 +14,7 @@ import { UtilityService } from '../../services/utility/utility.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
+  filteredProjects: Project[];
   totalProjects: number;
   gridHeaders = [
     {
@@ -99,9 +100,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscriptions$.add(
       this.projectStore.state$.subscribe(state => {
         this.projects = state.projects;
+        this.filteredProjects = state.filteredProjects;
+        this.totalProjects = state.projects.length;
       })
     );
-    this.totalProjects = this.projectStore.projects.length;
   }
 
   ngOnDestroy(): void {
@@ -112,7 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.projectStore.filterProjects(filter);
   }
 
-  updateProject({field, value, type, id}) {
+  updateProject({field, value, type, id, }) {
     this.projectStore.updateProject({field, value, type, id});
     const columnName = this.gridHeaders.find(header => header.field === field).name;
     this.alertService.alert(`Project ${id} ${columnName} Updated`);

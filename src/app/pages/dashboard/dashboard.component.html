@@ -24,12 +24,12 @@
         </div>
       </div>
       <div>
-        Displaying <strong>{{projects?.length}}</strong> of <strong>{{totalProjects}}</strong> projects
+        Displaying <strong>{{filteredProjects?.length}}</strong> of <strong>{{totalProjects}}</strong> projects
       </div>
   </div>
   <app-grid
     [headers]="gridHeaders"
-    [data]="projects"
+    [data]="filteredProjects"
     (filter)="filterProjects($event)"
     (editCell)="updateProject($event)"
   >
