@@ -16,9 +16,6 @@ import { UtilityService } from '../../services/utility/utility.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   projects: Project[];
-  totalProjects = 0;
-  totalBudget;
-  statusCounts = {};
   gridHeaders = [
     {
       name: 'Actions',
@@ -92,7 +89,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       editable: true,
     },
   ];
-  filters: any = {};
   private subscriptions$: Subscription = new Subscription();
 
   constructor(private projectStore: ProjectStore, private titleService: Title, private alertService: AlertService,
@@ -101,68 +97,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getProjects();
+    this.subscriptions$.add(
+      this.projectStore.state$.subscribe(state => {
+        this.projects = state.projects;
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.subscriptions$.unsubscribe();
   }
 
-  getProjects(projectFilter?) {
-    if (projectFilter) {
-      // Add filter to filter object
-      if (projectFilter.value) {
-        this.filters[projectFilter.field] = {
-          value: projectFilter.value,
-          partial: projectFilter.partial,
-          type: projectFilter.type
-        };
-      } else {
-        delete this.filters[projectFilter.field];
-      }
-    }
-
-    this.projectStore.state$.pipe(
-      map(state => {
-        return state.projects.filter(project => {
-          const include = Object.keys(this.filters).reduce((acc, key) => {
-            if (this.filters[key].partial) {
-              // Handle full text search for text inputs
-              const partial = new RegExp(this.filters[key].value, 'i');
-              acc = acc && partial.test(project[key]);
-            } else if (this.filters.type === 'date') {
-              // Handle date ranges
-              const isFromDate = /_from$/i.test(key);
-              const isToDate = /_to$/i.test(key);
-
-              if (isFromDate || isToDate) {
-                const dateKey = key.replace(/_(to|from)$/ig, '');
-                const filterDate = moment(this.filters[key], 'MM/DD/YYYY');
-                const projectDate = moment(project[dateKey], 'MM/DD/YYYY');
-                if (isFromDate) {
-                  acc = acc && filterDate.isSameOrAfter(projectDate);
-                } else if (isToDate) {
-                  acc = acc && filterDate.isSameOrBefore(projectDate);
-                }
-                console.log(dateKey);
-              }
-            } else {
-              // Handle non-partial text searches
-              acc = acc && this.filters[key].value === project[key];
-            }
-            return acc;
-          }, true);
-          return include;
-        });
-      })
-    )
-      .subscribe(projects => {
-        this.projects = [...projects];
-      });
+  filterProjects(filter?) {
+    this.projectStore.filterProjects(filter);
   }
 
-  patchProject({field, value, type, id}) {
-    this.projectStore.patchProject({field, value, type, id});
+  updateProject({field, value, type, id}) {
+    this.projectStore.updateProject({field, value, type, id});
     const columnName = this.gridHeaders.find(header => header.field === field).name;
     this.alertService.alert(`Project ${id} ${columnName} Updated`);
   }
