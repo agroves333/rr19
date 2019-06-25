@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { map } from 'rxjs/operators';
 import { Project } from '../../interfaces/project.interface';
 import mockData from '../../../mocks/projects.json';
 import { Store } from '../store';

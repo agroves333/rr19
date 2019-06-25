@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {Title} from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { ProjectStore } from '../../store/project/project.store';
 import { Project } from '../../interfaces/project.interface';

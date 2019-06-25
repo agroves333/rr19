@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectStore } from '../../store/project/project.store';
-import {UtilityService} from '../../services/utility/utility.service';
+import { UtilityService } from '../../services/utility/utility.service';
 
 @Component({
   selector: 'app-stats',
