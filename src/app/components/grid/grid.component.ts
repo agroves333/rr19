@@ -26,7 +26,12 @@ export class GridComponent implements OnInit {
     const filterGroup = new FormGroup({});
     this.headers.forEach(header => {
       if (header.field) {
-        filterGroup.addControl(header.field, new FormControl());
+        if (header.type === 'date') {
+          filterGroup.addControl(`${header.field}_from`, new FormControl());
+          filterGroup.addControl(`${header.field}_to`, new FormControl());
+        } else {
+          filterGroup.addControl(header.field, new FormControl());
+        }
       }
     });
 

@@ -35,15 +35,15 @@
                 *ngIf="header?.type === 'date'"
                 class="form-control mb-1"
                 type="date"
-                [formControlName]="header?.field"
-                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+                [formControlName]="header?.field + '_from'"
+                (input)="updateFilters(header?.field + '_from', $event.target.value, header?.partial, header?.type)"
               >
               <input
                 *ngIf="header?.type === 'date'"
                 class="form-control"
                 type="date"
-                [formControlName]="header?.field"
-                (input)="updateFilters(header?.field, $event.target.value, header?.partial, header?.type)"
+                [formControlName]="header?.field + '_to'"
+                (input)="updateFilters(header?.field + '_to', $event.target.value, header?.partial, header?.type)"
               >
             </div>
           </td>

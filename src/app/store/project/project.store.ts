@@ -86,19 +86,19 @@ export class ProjectStore extends Store<ProjectState> {
           // Handle full text search for text inputs
           const partial = new RegExp(this.filters[key].value, 'i');
           acc = acc && partial.test(project[key]);
-        } else if (this.filters.type === 'date') {
+        } else if (this.filters[key].type === 'date') {
           // Handle date ranges
           const isFromDate = /_from$/i.test(key);
           const isToDate = /_to$/i.test(key);
 
           if (isFromDate || isToDate) {
             const dateKey = key.replace(/_(to|from)$/ig, '');
-            const filterDate = moment(this.filters[key], 'MM/DD/YYYY');
-            const projectDate = moment(project[dateKey], 'MM/DD/YYYY');
+            const filterDate = moment(this.filters[key].value, 'YYYY-MM-DD');
+            const projectDate = moment(project[dateKey], 'YYYY-MM-DD');
             if (isFromDate) {
-              acc = acc && filterDate.isSameOrAfter(projectDate);
-            } else if (isToDate) {
               acc = acc && filterDate.isSameOrBefore(projectDate);
+            } else if (isToDate) {
+              acc = acc && filterDate.isSameOrAfter(projectDate);
             }
             console.log(dateKey);
           }
