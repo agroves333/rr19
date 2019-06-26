@@ -72,7 +72,7 @@ export class GridComponent implements OnInit {
   }
 
   getValue(row, field, type) {
-    if (row && row[field]) {
+    if (row && row[field] || row[field] === 0) {
       const value = row[field];
       if (type === 'currency') {
         return Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
