@@ -80,13 +80,13 @@ export class ProjectStore extends Store<ProjectState> {
     }
     let totalBudget = 0;
     const statusCounts = {};
-    const projects = this.state.projects.filter(project => {
+    const projects = this.state.projects.filter((project: Project) => {
       const include = Object.keys(this.filters).reduce((acc, key) => {
         if (this.filters[key].partial) {
           // Handle full text search for text inputs
           // Allow comma separated filters
           const terms = this.filters[key].value.split(',').reduce((acc2, term) => {
-            term.trim();
+            term = term.trim();
             if (term !== '') {
               acc2.push(term);
             }
