@@ -84,7 +84,16 @@ export class ProjectStore extends Store<ProjectState> {
       const include = Object.keys(this.filters).reduce((acc, key) => {
         if (this.filters[key].partial) {
           // Handle full text search for text inputs
-          const partial = new RegExp(this.filters[key].value, 'i');
+          // Allow comma separated filters
+          const terms = this.filters[key].value.split(',').reduce((acc2, term) => {
+            term.trim();
+            if (term !== '') {
+              acc2.push(term);
+            }
+            return acc2;
+          }, []);
+          const regex = `(${terms.join('|')})`;
+          const partial = new RegExp(regex, 'ig');
           acc = acc && partial.test(project[key]);
         } else if (this.filters[key].type === 'date') {
           // Handle date ranges
